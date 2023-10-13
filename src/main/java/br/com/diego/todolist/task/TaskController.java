@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/tasks")
@@ -47,5 +49,16 @@ public class TaskController {
         var tasks = this.taskRepository.findByUserId((UUID) userId);
 
         return tasks;
+    }
+
+    @PutMapping(value = "/{id}")
+    public TaskModel update(@PathVariable UUID id, @RequestBody TaskModel taskModel, HttpServletRequest request) {
+
+        var userId = request.getAttribute("userId");
+
+        taskModel.setUserId((UUID) userId);
+        taskModel.setId(id);
+
+        return this.taskRepository.save(taskModel);
     }
 }
